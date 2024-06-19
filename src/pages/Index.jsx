@@ -1,5 +1,6 @@
-import { Container, VStack, Heading, Text, Box, Image, Button, Input } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Image, Button, Input, IconButton } from "@chakra-ui/react";
 import { useState } from "react";
+import { FaHeart } from "react-icons/fa";
 
 const Index = () => {
   const [photos, setPhotos] = useState([
@@ -9,6 +10,7 @@ const Index = () => {
   ]);
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const [likeCounts, setLikeCounts] = useState(photos.map(() => 0));
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -22,8 +24,15 @@ const Index = () => {
         description: "New photo",
       };
       setPhotos([...photos, newPhoto]);
+      setLikeCounts([...likeCounts, 0]);
       setSelectedFile(null);
     }
+  };
+
+  const handleLike = (index) => {
+    const newLikeCounts = [...likeCounts];
+    newLikeCounts[index] += 1;
+    setLikeCounts(newLikeCounts);
   };
 
   return (
@@ -32,11 +41,20 @@ const Index = () => {
         <Heading as="h1" size="2xl">PhotoShare</Heading>
         <Text fontSize="lg">Share your favorite moments with the world</Text>
         <VStack spacing={4} width="100%">
-          {photos.map(photo => (
+          {photos.map((photo, index) => (
             <Box key={photo.id} borderWidth="1px" borderRadius="lg" overflow="hidden" width="100%">
               <Image src={photo.url} alt={photo.description} />
               <Box p={4}>
                 <Text>{photo.description}</Text>
+                <IconButton
+                  icon={<FaHeart />}
+                  onClick={() => handleLike(index)}
+                  colorScheme="red"
+                  variant="outline"
+                  aria-label="Like"
+                  mr={2}
+                />
+                <Text as="span">{likeCounts[index]} likes</Text>
               </Box>
             </Box>
           ))}
