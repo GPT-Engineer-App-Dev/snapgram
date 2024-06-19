@@ -1,4 +1,4 @@
-import { Container, VStack, Heading, Text, Box, Image, Button } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Image, Button, Input } from "@chakra-ui/react";
 import { useState } from "react";
 
 const Index = () => {
@@ -7,6 +7,24 @@ const Index = () => {
     { id: 2, url: "https://via.placeholder.com/300", description: "A serene beach" },
     { id: 3, url: "https://via.placeholder.com/300", description: "A bustling cityscape" },
   ]);
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    if (selectedFile) {
+      const newPhoto = {
+        id: photos.length + 1,
+        url: URL.createObjectURL(selectedFile),
+        description: "New photo",
+      };
+      setPhotos([...photos, newPhoto]);
+      setSelectedFile(null);
+    }
+  };
 
   return (
     <Container centerContent maxW="container.md" py={10}>
@@ -23,7 +41,8 @@ const Index = () => {
             </Box>
           ))}
         </VStack>
-        <Button colorScheme="teal" size="lg">Upload Photo</Button>
+        <Input type="file" onChange={handleFileChange} />
+        <Button colorScheme="teal" size="lg" onClick={handleUpload}>Upload Photo</Button>
       </VStack>
     </Container>
   );
